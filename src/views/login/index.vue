@@ -257,15 +257,20 @@ export default {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
-          this.$store.dispatch('LoginByUsername', this.loginForm).then(() => {
-            this.loading = false
-            if (this.$store.state.statistics.genderStatistics == null) {
-              this.$store.dispatch('getStatistic').then(res => {
-                this.$router.push({ path: this.redirect || '/' })
-              }).catch((err) => {
-                console.log(err)
-              })
+          this.$store.dispatch('LoginByUsername', this.loginForm).then(res => {
+            const data = res.data
+            if (data.code !== 200) {
+              this.$message(data.message)
+            } else {
+              if (this.$store.state.statistics.genderStatistics == null) {
+                this.$store.dispatch('getStatistic').then(res => {
+                  this.$router.push({ path: this.redirect || '/' })
+                }).catch((err) => {
+                  console.log(err)
+                })
+              }
             }
+            this.loading = false
           }).catch(() => {
             this.loading = false
           })

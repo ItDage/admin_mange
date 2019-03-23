@@ -56,20 +56,11 @@ const user = {
       return new Promise((resolve, reject) => {
         loginByUsername(username, userInfo.password).then(response => {
           const data = response.data
-          if (data.code === 405) {
-            this.$message('用户名或密码不正确!')
-            reject()
-          } else if (data.code === 406) {
-            this.$message('用户账号被锁定!')
-            return
-          } else if (data.code === 407) {
-            this.$message('服务器内部错误!')
-            reject()
-          } else {
+          if (data.code === 200) {
             commit('SET_TOKEN', data.data)
             setToken(response.data.data)
-            resolve()
           }
+          resolve(response)
         }).catch(error => {
           reject(error)
         })
