@@ -50,74 +50,28 @@
       </div>
       <el-button class="thirdparty-button" type="primary" @click="showDialog=true">{{ $t('login.register') }}</el-button>
     </el-form>
-
-    <el-dialog :title="$t('login.register')" :visible.sync="showDialog" center append-to-body @opened="resetForm('registerForm')">
-      <el-form ref="registerForm" :model="registerForm" :rules="rules" label-width="100px" class="demo-ruleForm">
-        <el-form-item :label="$t('i18nView.username')" prop="username">
-          <el-input v-model="registerForm.username" :placeholder="$t('tip.username')"/>
-        </el-form-item>
-        <el-form-item :label="$t('i18nView.email')" prop="email">
-          <el-col :span="20">
-            <el-input v-model="registerForm.email" :placeholder="$t('tip.email')"/>
-          </el-col>
-          <el-col :span="4">
-            <el-button :disabled="isSend" type="primary" @click.prevent="sendValidCode('registerForm')">{{ $t('i18nView.send') }}</el-button>
-          </el-col>
-        </el-form-item>
-        <el-form-item :label="$t('i18nView.password')" prop="password">
-          <el-input v-model="registerForm.password" :placeholder="$t('tip.password')" type="password" autocomplete="off"/>
-        </el-form-item>
-        <el-form-item :label="$t('i18nView.confirmpassword')" prop="checkPass">
-          <el-input v-model="registerForm.checkPass" :placeholder="$t('tip.confirmpassword')" type="password" autocomplete="off"/>
-        </el-form-item>
-        <el-form-item :label="$t('i18nView.school')" prop="school">
-          <el-input v-model="registerForm.school" :placeholder="$t('tip.school')"/>
-        </el-form-item>
-        <el-form-item :label="$t('i18nView.gender')" prop="gender">
-          <el-select v-model="registerForm.gender" :placeholder="$t('tip.gender')">
-            <el-option label="男" value="1"/>
-            <el-option label="女" value="0"/>
-          </el-select>
-        </el-form-item>
-        <el-form-item :label="$t('i18nView.birth')" prop="birth">
-          <el-col :span="7">
-            <el-date-picker v-model="registerForm.birth" :placeholder="$t('tip.birth')" format="yyyy 年 MM 月 dd 日" value-format="yyyy-MM-dd" type="date" style="width: 94%;"/>
-          </el-col>
-          <el-col :span="2" class="line"/>
-          <el-col :span="11"/>
-        </el-form-item>
-        <el-form-item :label="$t('i18nView.type')" prop="commonType">
-          <el-select v-model="registerForm.commonType" :placeholder="$t('tip.type')">
-            <el-option label="社团管理员" value="2"/>
-            <el-option label="普通用户" value="3"/>
-          </el-select>
-        </el-form-item>
-        <el-form-item :label="$t('i18nView.validCode')" prop="validCode">
-          <el-input v-model="registerForm.validCode" :placeholder="$t('tip.validCode')"/>
-        </el-form-item>
-        <el-form-item>
-          <el-button @click="resetForm('registerForm')">{{ $t('i18nView.reset') }}</el-button>
-          <el-button type="primary" @click="submitForm('registerForm')">{{ $t('i18nView.submit') }}</el-button>
-        </el-form-item>
-      </el-form>
-      <!--<social-sign />-->
-    </el-dialog>
-
+    <register
+      v-if="showDialog"
+      ref="registerForm"
+      :title.sync="title"
+      :visible.sync="showDialog"
+      :operator.sync="opr" />
   </div>
 </template>
 
 <script>
+import register from '@/views/login/register'
 import { isvalidUsername } from '@/utils/validate'
 import LangSelect from '@/components/LangSelect'
 import SocialSign from './socialsignin'
-import { sendValidCode, register } from '@/api/userMethod'
+import { sendValidCode } from '@/api/userMethod'
 import local from '@/views/i18n-demo/local'
 const viewName = 'i18nView'
 import { mapGetters } from 'vuex'
 
 export default {
   name: 'Login',
-  components: { LangSelect, SocialSign },
+  components: { LangSelect, SocialSign, register },
   data() {
     const validateUsername = (rule, value, callback) => {
       if (!isvalidUsername(value)) {
@@ -209,7 +163,8 @@ export default {
       loading: false,
       showDialog: false,
       redirect: undefined,
-      isSend: false
+      isSend: false,
+      title: '注册'
     }
   },
   computed: {

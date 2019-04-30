@@ -74,7 +74,6 @@
 </template>
 
 <script>
-import { isvalidUsername } from '@/utils/validate'
 import LangSelect from '@/components/LangSelect'
 import SocialSign from './socialsignin'
 import { sendValidCode, register } from '@/api/userMethod'
@@ -92,25 +91,11 @@ export default {
     },
     title: {
       type: String,
-      default: 'xx'
+      default: '注册'
     }
   },
   data() {
-    const validateUsername = (rule, value, callback) => {
-      if (!isvalidUsername(value)) {
-        callback(new Error('Please enter the correct user name'))
-      } else {
-        callback()
-      }
-    }
-    const validatePassword = (rule, value, callback) => {
-      if (value.length < 3) {
-        callback(new Error('The password can not be less than 6 digits'))
-      } else {
-        callback()
-      }
-    }
-    var validatePass = (rule, value, callback) => {
+    const validatePass = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('请输入密码'))
       } else {
@@ -120,7 +105,7 @@ export default {
         callback()
       }
     }
-    var validatePass2 = (rule, value, callback) => {
+    const validatePass2 = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('请再次输入密码'))
       } else if (value !== this.registerForm.password) {
@@ -130,10 +115,6 @@ export default {
       }
     }
     return {
-      loginForm: {
-        username: this.$store.state.user.email,
-        password: '123456'
-      },
       registerForm: {
         username: '',
         gender: '',
@@ -178,10 +159,6 @@ export default {
           { required: true, message: '请输入出生日期', trigger: 'change' }
         ]
       },
-      loginRules: {
-        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
-        password: [{ required: true, trigger: 'blur', validator: validatePassword }]
-      },
       passwordType: 'password',
       loading: false,
       redirect: undefined,
@@ -218,44 +195,7 @@ export default {
       this.$i18n.mergeLocaleMessage('es', local.es)
     }
   },
-  destroyed() {
-    // window.removeEventListener('hashchange', this.afterQRScan)
-  },
   methods: {
-    showPwd() {
-      if (this.passwordType === 'password') {
-        this.passwordType = ''
-      } else {
-        this.passwordType = 'password'
-      }
-    },
-    handleLogin() {
-      this.$refs.loginForm.validate(valid => {
-        if (valid) {
-          this.loading = true
-          this.$store.dispatch('LoginByUsername', this.loginForm).then(res => {
-            const data = res.data
-            if (data.code !== 200) {
-              this.$message(data.message)
-            } else {
-              if (this.$store.state.statistics.genderStatistics == null) {
-                this.$store.dispatch('getStatistic').then(res => {
-                  this.$router.push({ path: this.redirect || '/' })
-                }).catch((err) => {
-                  console.log(err)
-                })
-              }
-            }
-            this.loading = false
-          }).catch(() => {
-            this.loading = false
-          })
-        } else {
-          console.log('error submit!!')
-          return false
-        }
-      })
-    },
     afterQRScan() {
       // const hash = window.location.hash.slice(1)
       // const hashObj = getQueryObject(hash)
@@ -274,7 +214,7 @@ export default {
       //   })
       // }
     },
-    submitForm(formName) {
+    submitForm: function(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           return new Promise((resolve, reject) => {
@@ -287,7 +227,7 @@ export default {
                   message: response.data.message,
                   type: 'success'
                 })
-                this.showDialog = false
+                this.refreshTab()
               } else {
                 this.$message.error(response.data.message)
               }

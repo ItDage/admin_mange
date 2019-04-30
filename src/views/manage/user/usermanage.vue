@@ -102,7 +102,14 @@
         @current-change="handleCurrentChange"/>
     </div>
     <!--<addUser v-if="addUserVisible" ref="addUser" :visible.sync="addUserVisible" :title.sync="title" :operator.sync="opr" :user.sync="article" @closeMain="parentFn" />-->
-    <register v-if="showDialog" ref="registerForm" :title.sync="title" :visible.sync="showDialog" :operator.sync="opr" :user.sync="article" @closeMain="parentFn" />
+    <register
+      v-if="showDialog"
+      ref="registerForm"
+      :title.sync="title"
+      :visible.sync="showDialog"
+      :operator.sync="opr"
+      :user.sync="article"
+      @closeMain="parentFn" />
 
   </div>
 </template>
@@ -288,11 +295,6 @@ export default {
           color = 'danger'
       }
       return color
-    },
-    parentFn(data) {
-      if (data) {
-        this.refreshTab()
-      }
     },
     updatePassStatus(nval, id) {
       const param = {
