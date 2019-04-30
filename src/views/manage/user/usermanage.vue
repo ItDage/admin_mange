@@ -17,9 +17,9 @@
         <el-form-item>
           <el-button type="primary" @click="onSubmit">{{ $t('i18nView.find') }}</el-button>
         </el-form-item>
-        <!--<el-form-item>-->
-        <!--<el-button type="success" @click="showForm('addArticle')">{{ $t('i18nView.add') }}</el-button>-->
-        <!--</el-form-item>-->
+        <el-form-item>
+          <el-button type="success" @click="showForm">{{ $t('i18nView.add') }}</el-button>
+        </el-form-item>
         <el-form-item>
           <el-button :loading="downloadLoading" type="info" icon="document" @click="handleDownload">{{ $t('excel.export') }} Excel</el-button>
         </el-form-item>
@@ -101,19 +101,22 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"/>
     </div>
-    <addArticle v-if="addArticleVisible" ref="addArticle" :visible.sync="addArticleVisible" :title.sync="title" :operator.sync="opr" :article.sync="article" @closeMain="parentFn" />
+    <!--<addUser v-if="addUserVisible" ref="addUser" :visible.sync="addUserVisible" :title.sync="title" :operator.sync="opr" :user.sync="article" @closeMain="parentFn" />-->
+    <register v-if="showDialog" ref="registerForm" :title.sync="title" :visible.sync="showDialog" :operator.sync="opr" :user.sync="article" @closeMain="parentFn" />
+
   </div>
 </template>
 
 <script>
 
-import addArticle from './addArticle'
+import addUser from './addUser'
+import register from '@/views/login/register'
 import { getAllUserByParam, delUser, update } from '@/api/userMethod'
 import local from '@/views/i18n-demo/local'
 import { parseTime } from '@/utils'
 const viewName = 'i18nView'
 export default {
-  components: { addArticle },
+  components: { addUser, register },
   data() {
     return {
       tableData: [],
@@ -137,13 +140,13 @@ export default {
         school: '',
         valid: 1
       },
-      addArticleVisible: false,
+      showDialog: false,
       dialogFormVisible: false,
       currentPage: 1,
       value2: '',
       totalSize: 400,
       pageSize: 10,
-      title: '新增文章',
+      title: '新增用户',
       tableRefresh: false,
       downloadLoading: false,
       opr: 'add',
@@ -173,11 +176,11 @@ export default {
       this.$i18n.mergeLocaleMessage('zh', local.zh)
       this.$i18n.mergeLocaleMessage('es', local.es)
     }
-    this.loadTableData(this.currentPage, this.pageSize)
+    this.loadTableData()
   },
   methods: {
     handleEdit(index, row, refForm) {
-      this.addArticleVisible = true
+      this.addUserVisible = true
       this.article.id = row.id
       this.article.title = row.title
       this.article.author = row.author
@@ -223,31 +226,31 @@ export default {
     onSubmit() {
       this.currentPage = 1
       this.pageSize = 10
-      this.loadTableData(this.currentPage, this.pageSize, this.formInline.email, this.formInline.username, this.formInline.identification, this.formInline.school)
+      this.loadTableData()
     },
     filterTag(value, row) {
       return row.typeName === value
     },
     handleSizeChange(val) {
       this.pageSize = val
-      this.loadTableData(this.currentPage, val, this.formInline.title, this.formInline.author, this.formInline.publishDate, this.formInline.type)
+      this.loadTableData()
     },
     handleCurrentChange(val) {
       this.currentPage = val
-      this.loadTableData(val, this.pageSize, this.formInline.title, this.formInline.author, this.formInline.publishDate, this.formInline.type)
+      this.loadTableData()
     },
-    showForm(refForm) {
-      this.addArticleVisible = true
+    showForm() {
+      this.showDialog = true
       this.opr = 'add'
     },
-    loadTableData(currentPage, size, email, username, identification, school) {
+    loadTableData() {
       const param = {
-        'currentPage': currentPage,
-        'pageSize': size,
-        'email': email,
-        'username': username,
-        'identification': identification,
-        'school': school
+        'currentPage': this.currentPage,
+        'pageSize': this.pageSize,
+        'email': this.formInline.email,
+        'username': this.formInline.author,
+        'identification': this.formInline.identification,
+        'school': this.formInline.school
       }
       return new Promise((resolve, reject) => {
         getAllUserByParam(param).then(response => {
@@ -267,7 +270,7 @@ export default {
       })
     },
     refreshTab() {
-      this.loadTableData(this.currentPage, this.pageSize, this.formInline.title, this.formInline.author, this.formInline.publishDate, this.formInline.type)
+      this.loadTableData()
     },
     transferTag(scope) {
       var color = ''

@@ -1,6 +1,6 @@
 <template>
-  <!-- 新增文章-->
-  <el-dialog :visible.sync="visible" :title.sync="title" :article.sync="article" :operator.sync="operator" :before-close="refreshTab" center @opened="resetForm('form')">
+  <!-- 新增用户 普通管理员有的操作-->
+  <el-dialog :visible.sync="visible" :title.sync="title" :user.sync="user" :operator.sync="operator" :before-close="refreshTab" center @opened="resetForm('form')">
     <el-form ref="form" :model="form" :rules="rules" class="demo-ruleForm">
       <el-form-item :label-width="formLabelWidth" :label="$t('i18nView.title2')" prop="title">
         <el-input v-model="form.title" :placeholder="$t('tip.title2')" autocomplete="off"/>
@@ -42,7 +42,7 @@ export default {
       type: String,
       default: 'xx'
     },
-    article: {
+    user: {
       type: Object,
       default: null
     },
