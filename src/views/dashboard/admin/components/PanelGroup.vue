@@ -6,7 +6,9 @@
           <svg-icon icon-class="peoples" class-name="card-panel-icon" />
         </div>
         <div class="card-panel-description">
-          <div class="card-panel-text">{{ $t('i18nView.applications') }}</div>
+          <!--<div class="card-panel-text">{{ $t('i18nView.applications') }}</div>-->
+          <div v-if="roles.includes('admin')" class="card-panel-text">注册总人数</div>
+          <div v-else class="card-panel-text">{{ $t('i18nView.applications') }}</div>
           <count-to :start-val="0" :end-val="count1" :duration="2600" class="card-panel-num"/>
         </div>
       </div>
@@ -17,7 +19,9 @@
           <svg-icon icon-class="message" class-name="card-panel-icon" />
         </div>
         <div class="card-panel-description">
-          <div class="card-panel-text">{{ $t('i18nView.confirms') }}</div>
+          <!--<div class="card-panel-text">{{ $t('i18nView.confirms') }}</div>-->
+          <div v-if="roles.includes('admin')" class="card-panel-text">社团总数</div>
+          <div v-else class="card-panel-text">{{ $t('i18nView.confirms') }}</div>
           <count-to :start-val="0" :end-val="count2" :duration="3000" class="card-panel-num"/>
         </div>
       </div>
@@ -48,6 +52,7 @@
 </template>
 
 <script>
+import store from '@/store'
 import { count } from '@/api/userMethod'
 import CountTo from 'vue-count-to'
 
@@ -68,11 +73,14 @@ export default {
       date: [],
       date2: [],
       date3: [],
-      date4: []
+      date4: [],
+      roles: null
     }
   },
   created() {
     this.loadCountData()
+    const roles = store.getters && store.getters.roles
+    this.roles = roles
   },
   methods: {
     handleSetLineChartData(type) {

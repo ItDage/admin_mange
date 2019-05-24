@@ -5,9 +5,9 @@
       <el-form-item :label-width="formLabelWidth" :label="$t('i18nView.title2')" prop="title">
         <el-input v-model="form.title" :placeholder="$t('tip.title2')" autocomplete="off"/>
       </el-form-item>
-      <el-form-item :label-width="formLabelWidth" :label="$t('i18nView.author')" prop="author">
-        <el-input v-model="form.author" :placeholder="$t('tip.author')" autocomplete="off"/>
-      </el-form-item>
+      <!--<el-form-item :label-width="formLabelWidth" :label="$t('i18nView.author')" prop="author">-->
+      <!--<el-input v-model="form.author" :placeholder="$t('tip.author')" autocomplete="off"/>-->
+      <!--</el-form-item>-->
       <el-form-item :label-width="formLabelWidth" :label="$t('i18nView.type')" prop="type">
         <el-select v-if="roles.includes('admin')" v-model="form.type" :placeholder="$t('tip.type')">
           <el-option :label="$t('i18nView.notice')" value="1000"/>
