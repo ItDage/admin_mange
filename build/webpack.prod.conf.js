@@ -16,7 +16,14 @@ function resolve(dir) {
   return path.join(__dirname, '..', dir)
 }
 
-const env = require('../config/' + process.env.env_config + '.env')
+// const env = require('../config/' + process.env.env_config + '.env')
+if(process.env.NODE_ENV === 'testing') {
+  var env = require('../config/test.env')
+  console.log("test")
+}else{
+  var env = require('../config/prod.env')
+  console.log("prod")
+}
 
 // For NamedChunksPlugin
 const seen = new Set()
